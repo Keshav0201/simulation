@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Operating Systems Visual Lab</p>
+        <h1>CPU Scheduling Simulator</h1>
+        <p class="subtitle">Visualize, compare, and understand common CPU scheduling algorithms step by step.</p>
+      </div>
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">☾</button>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Configuration</p>
+            <h2>Simulation Setup</h2>
+          </div>
+          <button id="loadExampleBtn" class="secondary-btn">Load Example</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Algorithm
+            <select id="algorithmSelect">
+              <option value="fcfs">FCFS</option>
+              <option value="sjf">SJF (Non-Preemptive)</option>
+              <option value="srtf">SRTF</option>
+              <option value="priority_np">Priority (Non-Preemptive)</option>
+              <option value="priority_p">Priority (Preemptive)</option>
+              <option value="rr">Round Robin</option>
+            </select>
+          </label>
+
+          <label id="quantumWrap" class="hidden">
+            Time Quantum
+            <input id="quantumInput" type="number" min="1" value="2" />
+          </label>
+        </div>
+
+        <div class="table-wrap">
+          <table id="processTable">
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Arrival</th>
+                <th>Burst</th>
+                <th class="priority-col hidden">Priority</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="row-actions">
+          <button id="addProcessBtn" class="secondary-btn">+ Add Process</button>
+          <button id="runBtn" class="primary-btn">Run Simulation</button>
+        </div>
+      </section>
+
+      <section class="panel simulator-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Live Simulation</p>
+            <h2 id="simTitle">FCFS Simulation</h2>
+          </div>
+          <div class="time-badge">Time <strong id="currentTime">0</strong></div>
+        </div>
+
+        <div class="state-grid">
+          <article class="state-card cpu-card">
+            <span>CPU</span>
+            <div class="cpu-visual" id="cpuVisual" aria-live="polite">
+              <div class="cpu-lane cpu-lane-in"><span>IN</span></div>
+              <div class="cpu-core">
+                <div id="cpuProcessToken" class="cpu-process-token idle-token">Idle</div>
+                <div class="cpu-core-label">CPU CORE</div>
+              </div>
+              <div class="cpu-lane cpu-lane-out"><span>OUT</span></div>
+            </div>
+            <strong id="cpuProcess" class="cpu-process-name">Idle</strong>
+            <small id="cpuMeta">No process executing</small>
+          </article>
+          <article class="state-card">
+            <span>Ready Queue</span>
+            <div id="readyQueue" class="chip-row"><span class="muted">Empty</span></div>
+          </article>
+          <article class="state-card">
+            <span>Completed</span>
+            <div id="completedQueue" class="chip-row"><span class="muted">None</span></div>
+          </article>
+        </div>
+
+        <div class="status-board">
+          <div class="status-board-head">
+            <h3>Process Status</h3>
+            <span id="stepLabel">Step 0 / 0</span>
+          </div>
+          <div id="processStatusCards" class="process-status-grid"></div>
+        </div>
+
+        <div class="gantt-section">
+          <div class="gantt-head">
+            <h3>Gantt Chart</h3>
+            <span class="legend-note">Each block represents one CPU time unit.</span>
+          </div>
+          <div id="ganttChart" class="gantt-chart">
+            <div class="empty-state">Run the simulation to generate the timeline.</div>
+          </div>
+          <div id="ganttTimes" class="gantt-times"></div>
+        </div>
+
+        <div class="playback-bar">
+          <button id="prevBtn" class="secondary-btn">Previous</button>
+          <button id="nextBtn" class="secondary-btn">Next Step</button>
+          <button id="playBtn" class="primary-btn">Play</button>
+          <button id="pauseBtn" class="secondary-btn">Pause</button>
+          <button id="resetBtn" class="secondary-btn">Reset</button>
+          <label class="speed-control">Speed
+            <select id="speedSelect">
+              <option value="1600">0.5×</option>
+              <option value="900" selected>1×</option>
+              <option value="450">2×</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Analysis</p>
+            <h2>Results & Metrics</h2>
+          </div>
+        </div>
+
+        <div class="metric-cards">
+          <article><span>Avg Waiting</span><strong id="avgWaiting">—</strong></article>
+          <article><span>Avg Turnaround</span><strong id="avgTurnaround">—</strong></article>
+          <article><span>CPU Utilization</span><strong id="cpuUtil">—</strong></article>
+          <article><span>Throughput</span><strong id="throughput">—</strong></article>
+        </div>
+
+        <div class="table-wrap results-table-wrap">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th>Process</th><th>AT</th><th>BT</th><th>CT</th><th>TAT</th><th>WT</th><th>RT</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
